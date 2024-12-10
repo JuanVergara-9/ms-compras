@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    command: flask run --host=0.0.0.0 --port=5002
+    volumes:
+      - .:/app
+    ports:
+      - "5002:5002"
+    environment:
+      FLASK_APP: run.py
+      FLASK_ENV: development
+      DATABASE_URI: postgresql+psycopg2://postgres:12345678@db:5432/compras_bd
+      REDIS_HOST: redis
+    depends_on:
+      - db
+      - redis
+
+  db:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 12345678
+      POSTGRES_DB: compras_bd
+    ports:
+      - "5432:5432"
+
+  redis:
+    image: redis:6
+    ports:
+      - "6379:6379"
